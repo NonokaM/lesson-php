@@ -12,28 +12,29 @@
     </form>
     <ul id="taskList"></ul>
     <script>
-        function loadTasks() {
-            fetch('todo.php')
-            .then(response => response.json())
-            .then(tasks => {
-                const taskList = document.getElementById('taskList');
-                taskList.innerHTML = '';
-                tasks.forEach((task, index) => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = task;
-                    const removeButton = document.createElement('button');
-                    removeButton.textContent = '削除';
-                    removeButton.onclick = function() {
-                        fetch(`todo.php?remove=${index}`, { method: 'POST' })
-                        .then(() => {
-                            loadTasks();
-                        });
-                    };
-                    listItem.appendChild(removeButton);
-                    taskList.appendChild(listItem);
+function loadTasks() {
+    fetch('todo.php')
+    .then(response => response.json())
+    .then(tasks => {
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = '';
+        tasks.forEach(taskObj => {
+            const listItem = document.createElement('li');
+            listItem.textContent = taskObj.task;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = '削除';
+            removeButton.onclick = function() {
+                fetch(`todo.php?remove=${taskObj.id}`, { method: 'POST' })
+                .then(() => {
+                    loadTasks();
                 });
-            });
-        }
+            };
+            listItem.appendChild(removeButton);
+            taskList.appendChild(listItem);
+        });
+    });
+}
 
         document.addEventListener('DOMContentLoaded', function() {
             loadTasks();
