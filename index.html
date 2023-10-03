@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TODOアプリ</title>
+</head>
+<body>
+    <h1>TODOアプリ</h1>
+    <form action="todo.php" method="post">
+        タスク: <input type="text" name="task">
+        <input type="submit" name="add" value="追加">
+    </form>
+    <ul id="taskList"></ul>
+    <script>
+        function loadTasks() {
+            fetch('todo.php')
+            .then(response => response.json())
+            .then(tasks => {
+                const taskList = document.getElementById('taskList');
+                taskList.innerHTML = '';
+                tasks.forEach((task, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = task;
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = '削除';
+                    removeButton.onclick = function() {
+                        fetch(`todo.php?remove=${index}`, { method: 'POST' })
+                        .then(() => {
+                            loadTasks();
+                        });
+                    };
+                    listItem.appendChild(removeButton);
+                    taskList.appendChild(listItem);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasks();
+        });
+    </script>
+</body>
+</html>
