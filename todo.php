@@ -34,8 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_GET['remove'])) {
         removeTask($_GET['remove']);
     }
+    header('Location: index.html');  // リダイレクトします
     exit();
 }
+
 
 header('Content-Type: application/json');
 echo json_encode(getAllTasks());
